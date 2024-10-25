@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BookManagementSystem</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+<body>
+    <header class="header-main">
+        <div class="header-content">
+            <a href="/" class="logo">Home</a>
+            <nav class="nav-menu">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    @if (User.Claims.FirstOrDefault(c => c.Type == "IsAdmin")?.Value == "True")
+                    {
+                        <a href="/Book/ManageBooks" class="btn-link">Manage Books</a>
+                        <a href="/Book/Create" class="btn-link">Add Book</a>
+                    }
+                }
+            </nav>
+            <div class="auth-options">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <span>Welcome, @User.Identity.Name!</span>
+                    <form method="post" action="/Account/SignOut" style="display:inline;">
+                        <button type="submit" class="btn-signout">Sign Out</button>
+                    </form>
+                }
+                else
+                {
+                    <a href="/Account/SignIn" class="btn-link">Sign In</a>
+                    <a href="/Account/Register" class="btn-link">Register</a>
+                }
+            </div>
+        </div>
+    </header>
+    <div class="container body-content">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    <footer>
+        <div class="container footer">
+            <p>Features are subject to change. Some features, applications, and services may not be available in all regions or languages.</p>
+            <div class="footer-top"></div>
+            <p class="title">About Us</p>
+            <p>We are a community dedicated to sharing knowledge and resources. Our goal is to provide quality content and services to all users.</p>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

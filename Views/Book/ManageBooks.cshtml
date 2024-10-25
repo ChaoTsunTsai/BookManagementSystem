@@ -1,0 +1,38 @@
+﻿@model IEnumerable<BookManagementSystem.Models.Book>
+<head>
+    <link rel="stylesheet" href="~/css/book.css" />
+</head>
+<body> 
+<div class="container">
+    <h2>Manage Books</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Is Borrowed</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model)
+            {
+                <tr>
+                    <td>@book.Id</td>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@(book.IsBorrowed ? "Yes" : "No")</td>
+                    <td>
+                        <a href="@Url.Action("Edit", "Book", new { id = book.Id })" class="btn btn-primary">Edit</a>
+                        <form method="post" action="@Url.Action("Delete", "Book", new { id = book.Id })" style="display:inline;">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+</body>

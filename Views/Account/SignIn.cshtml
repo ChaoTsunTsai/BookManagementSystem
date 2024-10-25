@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Sign In";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/signin.css" />
+</head>
+
+<div class="signin-container">
+    <h2 class="signin-title">Sign In to Your Account</h2>
+    <form method="post" action="/Account/SignIn">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required />
+        </div>
+        <button type="submit" class="btn btn-primary signin-button">Sign In</button>
+        <div class="form-footer">
+            <p>Don't have an account? <a href="/Account/Register">Register here</a></p>                      
+        </div>
+    </form>
+</div>

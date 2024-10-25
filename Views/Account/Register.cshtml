@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/register.css" />
+</head>
+
+<div class="signin-container">
+    <h2 class="signin-title">Create a New Account</h2>
+    <form method="post" action="/Account/Register">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required />
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required />
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required />
+        </div>
+        <button type="submit" class="btn btn-primary signin-button">Register</button>
+        <div class="form-footer">
+            <p>Already have an account? <a href="/Account/SignIn">Sign In here</a></p>
+        </div>
+    </form>
+</div>
