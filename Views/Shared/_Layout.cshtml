@@ -10,20 +10,25 @@
 <body>
     <header class="header-main">
         <div class="header-content">
-            <a href="/" class="logo">Home</a>
-            <nav class="nav-menu">
-                @if (User.Identity.IsAuthenticated)
-                {
-                    @if (User.Claims.FirstOrDefault(c => c.Type == "IsAdmin")?.Value == "True")
-                    {
-                        <a href="/Book/ManageBooks" class="btn-link">Manage Books</a>
-                        <a href="/Book/Create" class="btn-link">Add Book</a>
-                    }
-                }
-            </nav>
+            <a href="/" class="logo">Home</a>            
             <div class="auth-options">
                 @if (User.Identity.IsAuthenticated)
                 {
+                    <nav class="nav-menu">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @if (User.Claims.FirstOrDefault(c => c.Type == "IsAdmin")?.Value == "True")
+                            {
+                                <div class="dropdown">
+                                    <button class="dropdown-toggle">Library</button>
+                                    <div class="dropdown-content">
+                                        <a href="/Book/Create">Add Book</a>
+                                        <a href="/Book/ManageBooks">Manage Books</a>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </nav>
                     <span>Welcome, @User.Identity.Name!</span>
                     <form method="post" action="/Account/SignOut" style="display:inline;">
                         <button type="submit" class="btn-signout">Sign Out</button>

@@ -8,8 +8,7 @@
 
     <table class="table">
         <thead>
-            <tr>
-                <th>ID</th>
+            <tr>                
                 <th>Title</th>
                 <th>Author</th>
                 <th>Is Borrowed</th>
@@ -19,8 +18,7 @@
         <tbody>
             @foreach (var book in Model)
             {
-                <tr>
-                    <td>@book.Id</td>
+                <tr>                    
                     <td>@book.Title</td>
                     <td>@book.Author</td>
                     <td>@(book.IsBorrowed ? "Yes" : "No")</td>
