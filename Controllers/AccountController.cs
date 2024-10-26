@@ -118,25 +118,8 @@ namespace BookManagementSystem.Controllers
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            // 註冊成功，自動登入並跳轉到首頁
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim("IsAdmin", user.IsAdmin.ToString())
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true // 保持登入狀態
-            };
-
-            // 執行登入
-            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties).Wait();
-
-            // 跳轉到首頁
-            return RedirectToAction("Index", "Home");
+            // 註冊成功後重定向到 SignIn 頁面，未設置登入狀態
+            return RedirectToAction("SignIn", "Account");
         }
 
         // Sign Out

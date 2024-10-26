@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BookManagementSystem.Views.Book
 {
-    public class IndexModel : PageModel
+    public class EditModel : PageModel
     {
         public void OnGet()
         {

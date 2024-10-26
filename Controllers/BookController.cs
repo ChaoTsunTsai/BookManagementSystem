@@ -138,5 +138,62 @@ namespace BookManagementSystem.Controllers
             // 傳遞書籍列表給視圖
             return View(books);
         }
+
+        // 顯示借閱書籍頁面
+        [Authorize]
+        public IActionResult BorrowBook()
+        {
+            // 取得所有書籍
+            var books = _context.Books.ToList();
+
+            // 傳遞書籍列表給視圖
+            return View(books);
+        }
+
+        // 處理借閱書籍請求
+        [Authorize]
+        [HttpPost]
+        public IActionResult BorrowBook(List<int> bookIds)
+        {
+            if (bookIds != null && bookIds.Any())
+            {
+                foreach (var bookId in bookIds)
+                {
+                    var book = _context.Books.FirstOrDefault(b => b.Id == bookId);
+                    if (book != null && !book.IsBorrowed)
+                    {
+                        book.IsBorrowed = true;
+                    }
+                }
+
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("BorrowBook");
+        }
+
+        // 顯示歸還書籍頁面
+        [Authorize]
+        public IActionResult ReturnBook()
+        {
+            var borrowedBooks = _context.Books.Where(b => b.IsBorrowed).ToList(); // 僅顯示已借閱的書籍
+            return View(borrowedBooks);
+        }
+
+        // 處理歸還書籍的請求
+        [HttpPost]
+        [Authorize]
+        public IActionResult ReturnBooks(List<int> bookIds)
+        {
+            var booksToReturn = _context.Books.Where(b => bookIds.Contains(b.Id) && b.IsBorrowed).ToList();
+
+            foreach (var book in booksToReturn)
+            {
+                book.IsBorrowed = false; // 將借閱狀態設為可用
+            }
+
+            _context.SaveChanges();
+            return RedirectToAction("ReturnBook"); // 重新載入頁面，確認歸還狀態
+        }
     }
 }

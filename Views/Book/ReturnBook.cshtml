@@ -1,0 +1,43 @@
+﻿@model IEnumerable<BookManagementSystem.Models.Book>
+
+@{
+    ViewData["Title"] = "Return Books";
+}
+
+<link rel="stylesheet" href="~/css/borrow.css" />
+
+<div class="container">
+    <h2>Return Books</h2>
+    <form asp-action="ReturnBooks" method="post">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="select-all" /></th>                    
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Borrowed Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var book in Model)
+                {
+                    <tr>
+                        <td><input type="checkbox" name="bookIds" value="@book.Id" @(book.IsBorrowed ? "" : "disabled") /></td>                        
+                        <td>@book.Title</td>
+                        <td>@book.Author</td>
+                        <td>@(book.IsBorrowed ? "Borrowed" : "Available")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-borrow">Return Selected Books</button>
+    </form>
+</div>
+
+<script>
+    // Select all checkboxes
+    document.getElementById("select-all").addEventListener("change", function() {
+        let checkboxes = document.querySelectorAll("input[name='bookIds']:not([disabled])");
+        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+    });
+</script>

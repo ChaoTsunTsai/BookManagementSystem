@@ -1,0 +1,53 @@
+﻿/* borrow.css */
+.container {
+	max-width: 90%;
+	margin: 0 auto;
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 20px 0;
+	font-size: 16px;
+	text-align: left;
+}
+
+	.table thead tr {
+		background-color: #333;
+		color: #fff;
+		text-align: center;
+	}
+
+	.table tbody tr:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+
+	.table tbody tr:hover {
+		background-color: #ddd;
+	}
+
+	.table th, .table td {
+		padding: 12px 15px;
+		border: 1px solid #ddd;
+	}
+
+/* 勾選框樣式 */
+.checkbox-cell {
+	text-align: center;
+}
+
+/* 借閱按鈕 */
+.btn-borrow {
+	padding: 10px 20px;
+	font-size: 16px;
+	background-color: #28a745;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	margin-top: 15px;
+}
+
+	.btn-borrow:hover {
+		background-color: #218838;
+	}
