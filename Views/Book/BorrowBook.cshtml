@@ -1,0 +1,44 @@
+﻿@model IEnumerable<BookManagementSystem.Models.Book>
+
+@{
+    ViewData["Title"] = "Borrow Book";
+}
+
+<link rel="stylesheet" href="~/css/borrow.css" />
+
+<div class="container">
+    <h2>Borrow Books</h2>
+    <form method="post" action="/Book/BorrowBook">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Select</th>                    
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Is Borrowed</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var book in Model)
+                {
+                    <tr>
+                        <td class="checkbox-cell">
+                            @if (!book.IsBorrowed)
+                            {
+                                <input type="checkbox" name="bookIds" value="@book.Id" />
+                            }
+                            else
+                            {
+                                <span>Not Available</span>
+                            }
+                        </td>                        
+                        <td>@book.Title</td>
+                        <td>@book.Author</td>
+                        <td>@(book.IsBorrowed ? "Yes" : "No")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="submit" class="btn-borrow">Borrow Selected Books</button>
+    </form>
+</div>
