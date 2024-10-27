@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using BookManagementSystem.Data;
 using BookManagementSystem.Models;
 using System.Linq;
+using System.Security.Claims;
 
 namespace BookManagementSystem.Controllers
 {
@@ -15,32 +16,26 @@ namespace BookManagementSystem.Controllers
             _context = context;
         }
 
-        // 檢查是否為管理員的方法
         private bool IsAdmin()
         {
             return User.Claims.FirstOrDefault(c => c.Type == "IsAdmin")?.Value == "True";
         }
 
-        // 顯示新增書籍頁面
         [HttpGet]
-        [Authorize] // 需要登入
+        [Authorize]
         public IActionResult Create()
         {
-            // 檢查是否為管理員
             if (IsAdmin())
             {
                 return View();
             }
-
-            return Forbid(); // 如果不是管理員，返回禁止訪問的響應
+            return Forbid();
         }
 
-        // 處理新增書籍請求
         [HttpPost]
         [Authorize]
         public IActionResult Create(Book book)
         {
-            // 檢查是否為管理員
             if (IsAdmin())
             {
                 if (ModelState.IsValid)
@@ -51,16 +46,13 @@ namespace BookManagementSystem.Controllers
                 }
                 return View(book);
             }
-
             return Forbid();
         }
 
-        // 顯示編輯書籍頁面
         [HttpGet]
         [Authorize]
         public IActionResult Edit(int? id)
         {
-            // 檢查是否為管理員
             if (!IsAdmin())
             {
                 return Forbid();
@@ -80,12 +72,10 @@ namespace BookManagementSystem.Controllers
             return View(book);
         }
 
-        // 處理編輯書籍的請求
         [HttpPost]
         [Authorize]
         public IActionResult Edit(Book book)
         {
-            // 檢查是否為管理員
             if (!IsAdmin())
             {
                 return Forbid();
@@ -100,12 +90,10 @@ namespace BookManagementSystem.Controllers
             return View(book);
         }
 
-        // 刪除書籍
         [HttpPost]
         [Authorize]
         public IActionResult Delete(int id)
         {
-            // 檢查是否為管理員
             if (!IsAdmin())
             {
                 return Forbid();
@@ -122,47 +110,47 @@ namespace BookManagementSystem.Controllers
             return RedirectToAction("ManageBooks");
         }
 
-        // 顯示所有書籍的管理頁面
         [Authorize]
         public IActionResult ManageBooks()
         {
-            // 檢查是否為管理員
             if (!IsAdmin())
             {
                 return Forbid();
             }
-
-            // 取得所有書籍
             var books = _context.Books.ToList();
-
-            // 傳遞書籍列表給視圖
             return View(books);
         }
 
-        // 顯示借閱書籍頁面
         [Authorize]
         public IActionResult BorrowBook()
         {
-            // 取得所有書籍
             var books = _context.Books.ToList();
-
-            // 傳遞書籍列表給視圖
             return View(books);
         }
 
-        // 處理借閱書籍請求
         [Authorize]
         [HttpPost]
         public IActionResult BorrowBook(List<int> bookIds)
         {
             if (bookIds != null && bookIds.Any())
             {
+                // 確認用戶已經登入並且擁有 NameIdentifier
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    // 若未找到 NameIdentifier，返回錯誤信息
+                    return Unauthorized("User ID not found. Please make sure you are logged in.");
+                }
+
+                var userId = int.Parse(userIdClaim.Value);
+
                 foreach (var bookId in bookIds)
                 {
                     var book = _context.Books.FirstOrDefault(b => b.Id == bookId);
                     if (book != null && !book.IsBorrowed)
                     {
                         book.IsBorrowed = true;
+                        book.BorrowedByUserId = userId; // 記錄借閱者的 ID
                     }
                 }
 
@@ -172,28 +160,32 @@ namespace BookManagementSystem.Controllers
             return RedirectToAction("BorrowBook");
         }
 
-        // 顯示歸還書籍頁面
         [Authorize]
         public IActionResult ReturnBook()
         {
-            var borrowedBooks = _context.Books.Where(b => b.IsBorrowed).ToList(); // 僅顯示已借閱的書籍
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var borrowedBooks = _context.Books.Where(b => b.IsBorrowed && b.BorrowedByUserId == userId).ToList();
             return View(borrowedBooks);
         }
 
-        // 處理歸還書籍的請求
         [HttpPost]
         [Authorize]
         public IActionResult ReturnBooks(List<int> bookIds)
         {
-            var booksToReturn = _context.Books.Where(b => bookIds.Contains(b.Id) && b.IsBorrowed).ToList();
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var booksToReturn = _context.Books
+                .Where(b => bookIds.Contains(b.Id) && b.IsBorrowed && b.BorrowedByUserId == userId)
+                .ToList();
 
             foreach (var book in booksToReturn)
             {
-                book.IsBorrowed = false; // 將借閱狀態設為可用
+                book.IsBorrowed = false;
+                book.BorrowedByUserId = null;
             }
 
             _context.SaveChanges();
-            return RedirectToAction("ReturnBook"); // 重新載入頁面，確認歸還狀態
+            return RedirectToAction("ReturnBook");
         }
     }
 }

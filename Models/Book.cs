@@ -15,5 +15,11 @@ namespace BookManagementSystem.Models
         public string Author { get; set; }
 
         public bool IsBorrowed { get; set; }
+
+        // 記錄借閱者 ID
+        public int? BorrowedByUserId { get; set; }
+
+        // 導覽屬性以存取借閱者詳細信息
+        public User BorrowedByUser { get; set; }
     }
 }
