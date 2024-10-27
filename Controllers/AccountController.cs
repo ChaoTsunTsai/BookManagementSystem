@@ -50,9 +50,10 @@ namespace BookManagementSystem.Controllers
                 var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
                 if (passwordVerificationResult == PasswordVerificationResult.Success)
                 {
-                    // 建立使用者的認證資訊
+                    // 建立使用者的認證資訊，包含用戶 ID
                     var claims = new List<Claim>
                     {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // 確保 NameIdentifier 設置正確
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(ClaimTypes.Email, user.Email),
                         new Claim("IsAdmin", user.IsAdmin.ToString())

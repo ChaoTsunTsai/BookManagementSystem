@@ -12,17 +12,17 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th><input type="checkbox" id="select-all" /></th>                    
+                    <th><input type="checkbox" id="select-all" /></th>
                     <th>Title</th>
                     <th>Author</th>
-                    <th>Borrowed Status</th>
+                    <th>Borrowed By You</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var book in Model)
                 {
                     <tr>
-                        <td><input type="checkbox" name="bookIds" value="@book.Id" @(book.IsBorrowed ? "" : "disabled") /></td>                        
+                        <td><input type="checkbox" name="bookIds" value="@book.Id" @(book.IsBorrowed ? "" : "disabled") /></td>
                         <td>@book.Title</td>
                         <td>@book.Author</td>
                         <td>@(book.IsBorrowed ? "Borrowed" : "Available")</td>
@@ -36,7 +36,7 @@
 
 <script>
     // Select all checkboxes
-    document.getElementById("select-all").addEventListener("change", function() {
+    document.getElementById("select-all").addEventListener("change", function () {
         let checkboxes = document.querySelectorAll("input[name='bookIds']:not([disabled])");
         checkboxes.forEach(checkbox => checkbox.checked = this.checked);
     });
